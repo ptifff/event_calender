@@ -10,7 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: EventCalendarScreen(),
     );
   }
@@ -121,17 +121,17 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
 
                 setState(() {
                   if (mySelectedEvents[
-                  DateFormat('yyyy-MM-dd').format(_selectedDate!)] !=
+                          DateFormat('yyyy-MM-dd').format(_selectedDate!)] !=
                       null) {
                     mySelectedEvents[
-                    DateFormat('yyyy-MM-dd').format(_selectedDate!)]
+                            DateFormat('yyyy-MM-dd').format(_selectedDate!)]
                         ?.add({
                       "eventTitle": titleController.text,
                       "eventDescp": descpController.text,
                     });
                   } else {
                     mySelectedEvents[
-                    DateFormat('yyyy-MM-dd').format(_selectedDate!)] = [
+                        DateFormat('yyyy-MM-dd').format(_selectedDate!)] = [
                       {
                         "eventTitle": titleController.text,
                         "eventDescp": descpController.text,
@@ -164,8 +164,11 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
       body: Column(
         children: [
           TableCalendar(
-            firstDay: DateTime(2022, 1, 1),
-            lastDay: DateTime(2022, 12, 31),
+            ///Fix: last date should not be before focused day initial value
+            /// So, we subtract 365 days from current date
+            firstDay: DateTime.now().subtract(const Duration(days: 365)),
+            /// Now, here we add 365 days to current date
+            lastDay: DateTime.now().add(const Duration(days: 365)),
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
             onDaySelected: (selectedDay, focusedDay) {
@@ -192,7 +195,7 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
             eventLoader: _listOfDayEvents,
           ),
           ..._listOfDayEvents(_selectedDate!).map(
-                (myEvents) => ListTile(
+            (myEvents) => ListTile(
               leading: const Icon(
                 Icons.done,
                 color: Colors.teal,
