@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+class Event {
+  String id;
+  String title;
+  DateTime date;
+
+  Event({required this.id, required this.title, required this.date});
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  CalendarController _calendarController = CalendarController();
+  TextEditingController _eventController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Event Scheduler'),
+      ),
+      body: Column(
+        children: [
+          TableCalendar(
+            calendarController: _calendarController,
+            events: {}, // Map events here based on date
+            // Other properties and callbacks as needed
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _eventController,
+              decoration: InputDecoration(labelText: 'Event Title'),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => _addEvent(),
+            child: Text('Add Event'),
+          ),
+          SizedBox(height: 20),
+          // StreamBuilder(
+          //   stream: FirebaseFirestore.instance.collection('events').snapshots(),
+          //   builder: (context, snapshot) {
+          //     if (!snapshot.hasData) {
+          //       return CircularProgressIndicator();
+          //     }
+          //
+          //     var events = snapshot.data.docs.map((doc) {
+          //       return Event(
+          //         id: doc.id,
+          //         title: doc['title'],
+          //         date: doc['date'].toDate(),
+          //       );
+          //     }).toList();
+          //
+          //     return Expanded(
+          //       child: ListView.builder(
+          //         itemCount: events.length,
+          //         itemBuilder: (context, index) {
+          //           return ListTile(
+          //             title: Text(events[index].title),
+          //             subtitle: Text(events[index].date.toString()),
+          //           );
+          //         },
+          //       ),
+          //     );
+          //   },
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _addEvent() async {
+    DateTime selectedDay = _calendarController.selectedDay ?? DateTime.now();
+
+    Event newEvent = Event(
+      id: '',
+      title: _eventController.text,
+      date: DateTime(
+        selectedDay.year,
+        selectedDay.month,
+        selectedDay.day,
+      ),
+    );
+
+    // await FirebaseFirestore.instance.collection('events').add({
+    //   'title': newEvent.title,
+    //   'date': newEvent.date,
+    // });
+
+    _eventController.clear();
+  }
+}
