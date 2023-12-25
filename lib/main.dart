@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
+enum Privacy {public, private, group}
+
 void main() {
   runApp(MyApp());
 }
@@ -144,6 +146,14 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
                     "New Event for backend developer ${json.encode(mySelectedEvents)}");
                 titleController.clear();
                 descpController.clear();
+                Map myMap = {
+                  "eventTitle": titleController.text,
+                  "eventDescp": descpController.text,
+                  "eventDate": DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                  "eventPrivacy": Privacy.public.name
+                };
+
+                print(myMap);
                 Navigator.pop(context);
                 return;
               }
